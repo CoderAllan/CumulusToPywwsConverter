@@ -1,5 +1,4 @@
 import os
-
 from os import listdir
 from os.path import isfile, exists, join, basename
 
@@ -60,7 +59,7 @@ logfiles = [f for f in listdir(cumulusLogFilesDirectory) if (isfile(join(cumulus
 
 dayDictionary = {}
 for logfile in logfiles:
-    print("Reading: " + logfile)
+    print(f"Reading: {logfile}")
     with open(join(cumulusLogFilesDirectory, logfile)) as lf:
         for line in lf:
             cols = line.split(";")
@@ -68,7 +67,7 @@ for logfile in logfiles:
             year = str("20" + dateparts[2])
             month = str(dateparts[1])
             day = str(dateparts[0])
-            timestamp = year + "-" + month + "-" + day
+            timestamp = f"{year}-{month}-{day}"
             line = convertCumulusToPywws(timestamp, cols)
             if timestamp not in dayDictionary:
                 dayDictionary.setdefault(timestamp, [])
@@ -77,7 +76,7 @@ for logfile in logfiles:
 for key in dayDictionary:
     (year, month, day) = key.split("-")
     # monthFolder = join(yearFolder, year + "-" + month)
-    currentYearMonth = join(pywwsDataFolder, year, year + "-" + month)
+    currentYearMonth = join(pywwsDataFolder, year, f"{year}-{month}")
     if not exists(currentYearMonth):
         os.makedirs(currentYearMonth)
     
@@ -88,7 +87,7 @@ for key in dayDictionary:
     if exists(filename):
         os.remove(filename)
 
-    print("Writing: " + filename)
+    print(f"Writing: {filename}")
     pywws_file = open(filename, "w")
     pywws_file.writelines("\n".join(weatherData))
     pywws_file.close()
